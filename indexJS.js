@@ -180,7 +180,8 @@ $(document).ready(function(){
         tabsArray.sort();
         for(let i = tabsArray.length - 1; i >= 0; i--){
             let tabIndex = parseInt(tabsArray[i]);
-            $("#tableTabs").find(`.ui-tabs-nav li:eq(${tabIndex})`).remove();
+            $("#tableTabs").find(`div:eq(${tabIndex})`).remove();
+            $("#tableTabs").find(`.ui-tabs-nav li:eq(${tabIndex})`).remove(); 
         }
         $("#tableTabs").tabs("refresh");
     });

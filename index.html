@@ -15,8 +15,10 @@ Student ID: 01808608
     <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/additional-methods.min.js"></script>
+    <script src="https://releases.jquery.com/git/ui/jquery-ui-git.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 
-
+    <link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css" rel="stylesheet">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <style>
@@ -55,7 +57,14 @@ Student ID: 01808608
                     <label for="max_row">Max Row Value(values -50 to 50)</label><br>
                     <input type="text" id="max_row" name="max_row"><br>
                     <br>
-                    <input id="submitBtn" type="submit" value="Submit" onclick="makeTable()"/>
+                    <div id="colSlider" class="col-8 m-2">
+
+                    </div> <br>
+                    <div id="rowSlider" class="col-8 m-2">
+
+                    </div>
+                    <br>
+                    <input id="submitBtn" type="submit" value="Submit"/>
                 </form>
             </div>
         </div>
@@ -63,7 +72,22 @@ Student ID: 01808608
             <div id="table" style="height: 400px" class="col-md-12 overflow-auto mt-2">
             </div>
         </div>
-    
+        <div class="row">
+          <div id="tableTabs" class="col-md-8">
+            <ul>
+              
+            </ul>
+            
+          </div>
+          <div id="removeTabs" class="col-md-3 p-2 m-2 border border-dark">
+            <h5>Remove tabs (0 to N)</h5>
+            <form>
+              <label for="rmTab">Remove Tab(s) - separate multiple tabs with a comma</label><br>
+              <input type="text" id="rmTab" name="rmTab"><br>
+              <input id="removeBtn" type="button" class="mt-2" value="Remove"/>
+            </form>
+          </div>
+        </div>
     </div>
     <script src="indexJS.js"></script>
   </body>

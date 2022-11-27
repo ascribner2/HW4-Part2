@@ -4,12 +4,17 @@ Email: Aidan_Scribner@student.uml.edu
 Student ID: 01808608
 */
 
+//table ranges
 var minCol;
 var maxCol;
 var minRow;
 var maxRow;
-var count = 0;
-var check = 0;
+var count = 0; //variable for checking if a table already exists
+
+var check = 0; //deprecated
+
+var tabId = "tab"; //base id for a new tab
+var tabTable; //table to be stored in a tab
 
 //new validation method for checking if the upper bound is greater than or equal to the lower bound
 $.validator.addMethod("ge", 
@@ -18,14 +23,7 @@ function(value, element, param) {
 },
 "Value is less than lower bound. Enter a higher number.");
 
-/* Gone never to be used again
-$.validator.addMethod("le", 
-function(value, element, param) {
-    return this.optional(element) || $(param).val() == "" || parseInt(value) <= parseInt($(param).val());
-},
-"Value is greater than upper bound. Enter a lower number.");
-*/
-
+//checks the input for non whole numbers
 $.validator.addMethod("intCheck", 
 function(value, element) {
     var regex=/^[-1-9]?[0-9]+$/;
@@ -36,8 +34,88 @@ function(value, element) {
 },
 "Input not valid. Enter a whole number between -50 and 50.");
 
-
 $(document).ready(function(){
+
+    //options for the column slider 
+    var colSliderOpt = {
+        max: 50,
+        min: -50,
+        values: [-25,25],
+        range: true,
+        slide: function() {
+            var minMax = $('#colSlider').slider("values");
+            $('#min_col').val(minMax[0]);
+            $('#max_col').val(minMax[1]);
+            makeTable();
+        }
+    }
+    $('#colSlider').slider(colSliderOpt);
+
+    //options for the row slider
+    var rowSliderOpt = {
+        max: 50,
+        min: -50,
+        values: [-25,25],
+        range: true,
+        slide: function() {
+            var minMax = $('#rowSlider').slider("values");
+            $('#min_row').val(minMax[0]);
+            $('#max_row').val(minMax[1]);
+            makeTable();
+        }
+    }
+    $('#rowSlider').slider(rowSliderOpt);
+
+    //Sets the inital values to the values of the sliders
+    $('#min_col').val($('#colSlider').slider("values")[0]);
+    $('#max_col').val($('#colSlider').slider("values")[1]);
+    $('#min_row').val($('#rowSlider').slider("values")[0]);
+    $('#max_row').val($('#rowSlider').slider("values")[1]);
+
+    //functions to change the sliders when the text input changes
+    //min col change
+    $('#min_col').change(function() {
+        if(($("#table_range").valid())){
+            let minVal = $(this).val();
+            let maxVal = $('#max_col').val();
+            $('#colSlider').slider("option","values", [minVal, maxVal]);
+            makeTable();
+        }
+    });
+
+    //max col change
+    $('#max_col').change(function() {
+        if(($("#table_range").valid())){
+            let minVal = $(this).val();
+            let maxVal = $('#max_col').val();
+            $('#colSlider').slider("option","values", [minVal, maxVal]);
+            makeTable();
+        }
+    });
+
+    //min row change
+    $('#min_row').change(function() {
+        if(($("#table_range").valid())){
+            let minVal = $(this).val();
+            let maxVal = $('#max_row').val();
+            $('#rowSlider').slider("option","values", [minVal, maxVal]);
+            makeTable();
+        }
+    });
+    
+    //max row change
+    $('#max_row').change(function() {
+        if(($("#table_range").valid())){
+            let minVal = $(this).val();
+            let maxVal = $('#max_row').val();
+            $('#rowSlider').slider("option","values", [minVal, maxVal]);
+            makeTable();
+        }
+    });
+    //text changing sliders functions END
+
+    var numTabs = 0; //keeps track of the number of tabs
+    $("#tableTabs").tabs(); //creates tabs
     
     //validate the form for all of the values
     $('#table_range').validate({
@@ -74,11 +152,43 @@ $(document).ready(function(){
         }
     }); 
 
+    
+    //once the submit button is hit this function is executed
+    //it add the current table to the tabs and makes sure the screen doesn't refresh
     $('#table_range').submit(function () {
+       // makeTable();
+        if(($("#table_range").valid())){
+            tabTable = document.getElementById('table').lastChild.cloneNode(true);
+            var tabIdHash = "#" + tabId + numTabs;
+            $('#tableTabs > ul').append(`<li><a href="${tabIdHash}">(${minCol} to ${maxCol}) by (${minRow} to ${maxRow})</a></li>`);
+            $('#tableTabs').append(`<div id=${tabId + numTabs} style="height: 400px" class="col-md-12 overflow-auto mt-2"></div>`);
+            $(`${tabIdHash}`).append(tabTable);
+            $('#tableTabs').tabs('refresh');
+            numTabs += 1;
+        }
         return false;
     });
     
+    /*
+    removes the tabs selected by taking in an array and spliting it using a regex
+    then it sorts the array to be in order. Finally removes the items from the back to
+    avoid the shift of indices when each element is removed
+    */
+    $('#removeBtn').click(function(){
+        let tabsInput = $('#rmTab').val();
+        let tabsArray = tabsInput.split(/[, ]+/);
+        tabsArray.sort();
+        for(let i = tabsArray.length - 1; i >= 0; i--){
+            let tabIndex = parseInt(tabsArray[i]);
+            $("#tableTabs").find(`.ui-tabs-nav li:eq(${tabIndex})`).remove();
+        }
+        $("#tableTabs").tabs("refresh");
+    });
+
+
+    makeTable();
 });
+
 
 function makeTable() { //table creation function definition
     //check = 0; //if equals 1 then there is invalid input and function returns 
@@ -91,11 +201,7 @@ function makeTable() { //table creation function definition
     maxCol = parseInt(document.getElementById('max_col').value);
     minRow = parseInt(document.getElementById('min_row').value);
     maxRow = parseInt(document.getElementById('max_row').value);
-    
-
-    if(!($("#table_range").valid())){
-        return;
-    } 
+     
     //Setup Input END
 
     
